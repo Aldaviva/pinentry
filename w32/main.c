@@ -300,10 +300,10 @@ move_mouse_and_click (HWND hwnd)
   x = rect.left;
   y = rect.bottom;
 
-  normx = x * (65535 / wscreen);
+  normx = x * (65535.0 / wscreen);
   if (normx < 0 || normx > 65535)
     return;
-  normy = y * (65535 / hscreen);
+  normy = y * (65535.0 / hscreen);
   if (normy < 0 || normy > 65535)
     return;
 
