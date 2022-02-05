@@ -1,0 +1,41 @@
+name: w32
+
+on:
+  push:
+    branches: [ master, w32-mouse-position-fix ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make binutils automake gettext texinfo mingw-w64 libgpg-error-dev libassuan-mingw-w64-dev
+    
+    - name: Autogen
+      run: |
+        ./autogen.sh
+        ./autogen.sh --build-w32
+      
+    - name: Compile
+      run: make
+      
+    - name: Prepare bundle
+      run: |
+        mkdir -p ./w32/bundle
+        ln -rs ./w32/pinentry-w32.exe ./w32/bundle
+        ln -rs /usr/i686-w64-mingw32/bin/libassuan-0.dll ./w32/bundle
+        ln -rs /usr/i686-w64-mingw32/bin/libgpg-error-0.dll ./w32/bundle
+
+    - name: Upload bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: pinentry-w32
+        path: ./w32/bundle
